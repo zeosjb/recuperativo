@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
 const apiUrl = "https://jsonplaceholder.typicode.com/posts";
@@ -34,7 +31,8 @@ class App extends Component {
       axios.get(apiUrl, { params: { search: searchTerm } })
         .then(response => {
           this.setState({ data: response.data });
-        })
+        }).then((response) => response.json())
+        .then((json) => console.log(json))
         .catch(error => {
           console.log(error.message);
         });
@@ -57,13 +55,14 @@ class App extends Component {
         this.modalInsertar();
         this.fetchPosts();
         this.setState({
-          post: {
+          post: JSON.stringify({
             title: "",
             body: "",
             userId: ""
-          }
+          })
         });
-      })
+      }).then((response) => response.json())
+      .then((json) => console.log(json))
       .catch(error => {
         if (error.response && error.response.data) {
           console.log("Error:", error.response.data);
@@ -80,7 +79,8 @@ class App extends Component {
       .then(response => {
         this.modalInsertar();
         this.fetchPosts();
-      })
+      }).then((response) => response.json())
+      .then((json) => console.log(json))
       .catch(error => {
         console.log(error.message);
       });
@@ -93,7 +93,8 @@ class App extends Component {
       .then(response => {
         this.setState({ modalEliminar: false, selectedId: "" });
         this.fetchPosts();
-      })
+      }).then((response) => response.json())
+      .then((json) => console.log(json))
       .catch(error => {
         console.log(error.message);
       });
@@ -104,11 +105,11 @@ class App extends Component {
     this.setState(prevState => ({
       modalInsertar: !prevState.modalInsertar,
       tipoModal: 'insertar',
-      post: {
+      post: JSON.stringify({
         title: "",
         body: "",
         userId: ""
-      }
+      })
     }));
   }
 
@@ -119,14 +120,15 @@ class App extends Component {
         this.setState({
           selectedId: post.id,
           tipoModal: 'actualizar',
-          post: {
+          post: JSON.stringify({
             id: selectedPost.id,
             title: selectedPost.title,
             body: selectedPost.body,
             userId: selectedPost.userId
-          }
+          })
         });
-      })
+      }).then((response) => response.json())
+      .then((json) => console.log(json))
       .catch(error => {
         console.log(error.message);
       });
@@ -178,11 +180,11 @@ class App extends Component {
                   <td>{post.userId}</td>
                   <td>
                     <button className="btn btn-primary" onClick={() => { this.selectPost(post); this.modalInsertar() }}>
-                      <FontAwesomeIcon icon={faEdit} />
+                      Editar
                     </button>
                     {"   "}
                     <button className="btn btn-danger" onClick={() => { this.selectPost(post); this.setState({ modalEliminar: true }) }}>
-                      <FontAwesomeIcon icon={faTrashAlt} />
+                      Eliminar
                     </button>
                   </td>
                 </tr>
